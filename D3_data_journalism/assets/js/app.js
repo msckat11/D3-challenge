@@ -16,7 +16,7 @@ var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
 // Select body, append SVG area to it, and set the dimensions
 var svg = d3
-    .select("body")
+    .select("#scatter")
     .append("svg")
     .attr("height", svgHeight)
     .attr("width", svgWidth);
@@ -30,26 +30,40 @@ var chartGroup = svg.append("g")
 // Load data from data.csv
 d3.csv("data.csv").then(function (journalData) {
 
-    // Print the tvData
-    console.log(journalData);
+    // // Print the tvData
+    // console.log(journalData);
 
-    // Cast the healthcare and poverty value to a number for each state
+    // Step 1: Cast the healthcare and poverty value to a number for each state
     journalData.forEach(function (state) {
         state.healthcare = +state.healthcare;
         state.poverty = +state.poverty;
-
     });
 
-    // // Create code to build the bar chart using the tvData.
-    // chartGroup.selectAll(".bar")
-    //     .data(journalData)
-    //     .enter()
-    //     .append("rect")
-    //     .classed("bar", true)
-    //     .attr("width", d => barWidth)
-    //     .attr("height", d => d.hours * scaleY)
-    //     .attr("x", (d, i) => i * (barWidth + barSpacing))
-    //     .attr("y", d => chartHeight - d.hours * scaleY);
+    // Step 3: Create axis functions
+    // ==============================
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
+
+    // Step 4: Append Axes to the chart
+    // ==============================
+    chartGroup.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(bottomAxis);
+
+    chartGroup.append("g")
+        .call(leftAxis);
+
+    // Step 5: Create Circles
+    // ==============================
+    var circlesGroup = chartGroup.selectAll("circle")
+        .data(hairData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xLinearScale(d.hair_length))
+        .attr("cy", d => yLinearScale(d.num_hits))
+        .attr("r", "15")
+        .attr("fill", "pink")
+        .attr("opacity", ".5");
 
 }).catch(function (error) {
     console.log(error);
