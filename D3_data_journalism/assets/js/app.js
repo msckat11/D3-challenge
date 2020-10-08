@@ -33,21 +33,30 @@ d3.csv("data.csv").then(function (journalData) {
     // // Print the tvData
     // console.log(journalData);
 
-    // Step 1: Cast the healthcare and poverty value to a number for each state
+    // Step 1: Parse data and cast the healthcare and poverty value to a number for each state
     journalData.forEach(function (state) {
         state.healthcare = +state.healthcare;
         state.poverty = +state.poverty;
     });
 
+    // Step 2: Create scale functions
+    var xScale = d3.scaleLinear()
+        .domain([0, d3.max(journalData, d => d.hair_length)])
+        .range([0, chartWidth]);
+
+    var yScale = d3.scaleLinear()
+        .domain([0, d3.max(journalData, d => d.num_hits)])
+        .range([chartHeight, 0]);
+
     // Step 3: Create axis functions
     // ==============================
-    var bottomAxis = d3.axisBottom(xLinearScale);
-    var leftAxis = d3.axisLeft(yLinearScale);
+    var bottomAxis = d3.axisBottom(xScale);
+    var leftAxis = d3.axisLeft(yScale);
 
     // Step 4: Append Axes to the chart
     // ==============================
     chartGroup.append("g")
-        .attr("transform", `translate(0, ${height})`)
+        .attr("transform", `translate(0, ${chartHeight})`)
         .call(bottomAxis);
 
     chartGroup.append("g")
