@@ -21,10 +21,10 @@ var svg = d3
     .attr("height", svgHeight)
     .attr("width", svgWidth);
 
-// // Append a group to the SVG area and shift ('translate') it to the right and down to adhere
-// // to the margins set in the "chartMargin" object.
-// var chartGroup = svg.append("g")
-//     .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
+// Append a group to the SVG area and shift ('translate') it to the right and down to adhere
+// to the margins set in the "chartMargin" object.
+var chartGroup = svg.append("g")
+    .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 
 // Load data from data.csv
@@ -60,14 +60,9 @@ d3.csv("data.csv").then(function (journalData) {
 
     // Step 4: Append Axes to the chart
     // ==============================
-    // Append a group to the SVG area and shift ('translate') it to the right and down to adhere
-    // to the margins set in the "chartMargin" object.
-    var chartGroup = svg.append("g")
-        .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
     chartGroup.append("g")
         .attr("transform", `translate(0, ${chartHeight})`)
         .call(bottomAxis);
-
     chartGroup.append("g")
         .call(leftAxis);
 
@@ -79,9 +74,26 @@ d3.csv("data.csv").then(function (journalData) {
         .append("circle")
         .attr("cx", d => xScale(d.poverty))
         .attr("cy", d => yScale(d.healthcare))
-        .attr("r", "15")
-        .attr("fill", "pink")
-        .attr("opacity", ".5");
+        .attr("r", "10")
+        .attr("fill", "skyblue")
+        .attr("opacity", ".7");
+
+
+
+
+    // Create axes labels
+    chartGroup.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - chartMargin.left + 40)
+        .attr("x", 0 - (chartHeight / 2))
+        .attr("dy", "1em")
+        .attr("class", "axisText")
+        .text("Lacks Healthcare Access (%)");
+
+    chartGroup.append("text")
+        .attr("transform", `translate(${chartWidth / 2}, ${svgHeight + chartMargin.top - 30})`)
+        .attr("class", "axisText")
+        .text("In Poverty (%)");
 
 }).catch(function (error) {
     console.log(error);
