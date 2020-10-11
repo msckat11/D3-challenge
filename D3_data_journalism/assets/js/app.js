@@ -1,6 +1,6 @@
 // Define SVG area dimensions
-var svgWidth = 960;
-var svgHeight = 660;
+var svgWidth = 600;
+var svgHeight = 510;
 
 // Define the chart's margins as an object
 var chartMargin = {
@@ -21,10 +21,10 @@ var svg = d3
     .attr("height", svgHeight)
     .attr("width", svgWidth);
 
-// Append a group to the SVG area and shift ('translate') it to the right and down to adhere
-// to the margins set in the "chartMargin" object.
-var chartGroup = svg.append("g")
-    .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
+// // Append a group to the SVG area and shift ('translate') it to the right and down to adhere
+// // to the margins set in the "chartMargin" object.
+// var chartGroup = svg.append("g")
+//     .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 
 // Load data from data.csv
@@ -33,19 +33,24 @@ d3.csv("data.csv").then(function (journalData) {
     // // Print the tvData
     // console.log(journalData);
 
+
     // Step 1: Parse data and cast the healthcare and poverty value to a number for each state
+    // ==============================
+
     journalData.forEach(function (state) {
         state.healthcare = +state.healthcare;
         state.poverty = +state.poverty;
     });
 
     // Step 2: Create scale functions
+    // ==============================
+
     var xScale = d3.scaleLinear()
-        .domain([0, d3.max(journalData, d => d.hair_length)])
+        .domain([0, d3.max(journalData, d => d.poverty)])
         .range([0, chartWidth]);
 
     var yScale = d3.scaleLinear()
-        .domain([0, d3.max(journalData, d => d.num_hits)])
+        .domain([0, d3.max(journalData, d => d.healthcare)])
         .range([chartHeight, 0]);
 
     // Step 3: Create axis functions
@@ -55,6 +60,10 @@ d3.csv("data.csv").then(function (journalData) {
 
     // Step 4: Append Axes to the chart
     // ==============================
+    // Append a group to the SVG area and shift ('translate') it to the right and down to adhere
+    // to the margins set in the "chartMargin" object.
+    var chartGroup = svg.append("g")
+        .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
     chartGroup.append("g")
         .attr("transform", `translate(0, ${chartHeight})`)
         .call(bottomAxis);
@@ -65,11 +74,11 @@ d3.csv("data.csv").then(function (journalData) {
     // Step 5: Create Circles
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
-        .data(hairData)
+        .data(journalData)
         .enter()
         .append("circle")
-        .attr("cx", d => xLinearScale(d.hair_length))
-        .attr("cy", d => yLinearScale(d.num_hits))
+        .attr("cx", d => xScale(d.poverty))
+        .attr("cy", d => yScale(d.healthcare))
         .attr("r", "15")
         .attr("fill", "pink")
         .attr("opacity", ".5");
