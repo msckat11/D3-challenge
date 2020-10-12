@@ -1,20 +1,20 @@
 // Define SVG area dimensions
-var svgWidth = 600;
-var svgHeight = 510;
+var svgWidth = 800;
+var svgHeight = 610;
 
 // Define the chart's margins as an object
 var chartMargin = {
-    top: 30,
-    right: 30,
-    bottom: 30,
-    left: 30
+    top: 40,
+    right: 40,
+    bottom: 40,
+    left: 100
 };
 
 // Define dimensions of the chart area
 var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
 var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
-// Select body, append SVG area to it, and set the dimensions
+// Select scatter ID, append SVG area to it, and set the dimensions
 var svg = d3
     .select("#scatter")
     .append("svg")
@@ -46,11 +46,11 @@ d3.csv("data.csv").then(function (journalData) {
     // ==============================
 
     var xScale = d3.scaleLinear()
-        .domain([(d3.min(journalData, d => d.poverty)) - 1, d3.max(journalData, d => d.poverty)])
+        .domain([(d3.min(journalData, d => d.poverty)) - 1, d3.max(journalData, d => d.poverty) + 1])
         .range([0, chartWidth]);
 
     var yScale = d3.scaleLinear()
-        .domain([(d3.min(journalData, d => d.healthcare)) - 1, d3.max(journalData, d => d.healthcare)])
+        .domain([(d3.min(journalData, d => d.healthcare)) - 1, d3.max(journalData, d => d.healthcare) + 1])
         .range([chartHeight, 0]);
 
     // Step 3: Create axis functions
@@ -84,14 +84,15 @@ d3.csv("data.csv").then(function (journalData) {
     // Create axes labels
     chartGroup.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 0 - chartMargin.left + 40)
+        .attr("y", 0 - chartMargin.left)
         .attr("x", 0 - (chartHeight / 2))
         .attr("dy", "1em")
         .attr("class", "axisText")
         .text("Lacks Healthcare Access (%)");
 
+
     chartGroup.append("text")
-        .attr("transform", `translate(${chartWidth / 2}, ${svgHeight + chartMargin.top - 30})`)
+        .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + chartMargin.top - 5})`)
         .attr("class", "axisText")
         .text("In Poverty (%)");
 
