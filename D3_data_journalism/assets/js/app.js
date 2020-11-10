@@ -71,15 +71,35 @@ d3.csv("data.csv").then(function (journalData) {
     var circlesGroup = chartGroup.selectAll("circle")
         .data(journalData)
         .enter()
+
+    circlesGroup
         .append("circle")
         .attr("cx", d => xScale(d.poverty))
         .attr("cy", d => yScale(d.healthcare))
         .attr("r", "10")
-        .attr("fill", "skyblue")
-        .attr("opacity", ".7");
+        .attr("class", function (d) {
+            return "stateCircle " + d.abbr;
+        });
 
-
-
+    // Create state labels for circles
+    circlesGroup.append("text")
+        .text(d => d.abbr)
+        .attr("dx", d => xScale(d["poverty"]))
+        .attr("dy", d => yScale(d["healthcare"]) + 10 / 2.5)
+        .attr("font-size", 10)
+        .attr("class", "stateText")
+    // .on("mouseover", function (d) {
+    //     // Show the tooltip
+    //     toolTip.show(d);
+    //     // Highlight the state circle's border
+    //     d3.select("." + d.abbr).style("stroke", "#323232");
+    // })
+    // .on("mouseout", function (d) {
+    //     // Remove tooltip
+    //     toolTip.hide(d);
+    //     // Remove highlight
+    //     d3.select("." + d.abbr).style("stroke", "#e3e3e3");
+    // });
 
     // Create axes labels
     chartGroup.append("text")
